@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>イヤーピース比較</title>
+  <meta name="description" content="イヤーピースのサイズ・特徴・ユーザー評価を比較できるサイト">
+  <meta name="theme-color" content="#f6f5f2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-title" content="イヤピ比較">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="style.css?v=35">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="site-nav sub-nav"><a href="./" aria-current="page">一覧</a><a href="compare.html">比較</a></nav>
+    <h1>イヤーピース比較</h1>
+    <p class="lead">シルエットの横（スマホでは下）のレーダーは音の傾向スコアです。気になる製品を「比較に追加」すると、比較ページで並べて見られます（最大4つ）。</p>
+    <div class="hero-actions">
+      <button id="open-quiz" class="button">🎧 好みから探す</button>
+      <label class="cap-input">耳のサイズ（傘径）
+        <input id="cap" type="number" min="8" max="18" step="0.5" inputmode="decimal" placeholder="例 12">
+        <span>mm</span>
+      </label>
+      <button id="cap-clear" class="ghost small" hidden>サイズを解除</button>
+    </div>
+    <p id="cap-note" class="note" hidden></p>
+  </header>
+
+  <main>
+    <section class="filters" aria-label="絞り込み">
+      <input id="q" type="search" placeholder="名前・ブランド・特徴で検索（カナ読みも可）">
+      <button id="filter-toggle" class="ghost filter-toggle" type="button" aria-expanded="false" aria-controls="filter-more">絞り込み・並び順</button>
+      <div id="filter-more" class="filter-more">
+      <select id="use">
+        <option value="">使い方：すべて</option>
+        <option value="wired">有線イヤホン向け</option>
+        <option value="tws">完全ワイヤレス向け（短軸・TWS用）</option>
+        <option value="airpods">AirPods 専用</option>
+      </select>
+      <select id="material"><option value="">素材：すべて</option></select>
+      <label class="range">ノズル穴
+        <select id="bore">
+          <option value="">すべて</option>
+          <option value="0-3.9">4.0mm未満</option>
+          <option value="4-4.9">4.0〜4.9mm</option>
+          <option value="5-99">5.0mm以上</option>
+        </select>
+      </label>
+      <select id="dims">
+        <option value="">寸法：すべて</option>
+        <option value="yes">シルエット比較できる製品</option>
+        <option value="no">寸法未公表の製品</option>
+      </select>
+      <select id="mine">
+        <option value="">マイリスト：すべて</option>
+        <option value="fav">♥ お気に入り</option>
+        <option value="owned">持っている</option>
+        <option value="memo">メモあり</option>
+      </select>
+      <select id="sort">
+        <option value="name">並び順：名前順</option>
+      </select>
+      </div>
+      <span id="count" class="count"></span>
+    </section>
+
+    <details class="dim-help">
+      <summary>寸法の見方・情報の確かさ（●の意味）</summary>
+      <div class="dim-help-body">
+        <svg viewBox="0 0 250 130" role="img" aria-label="イヤーピースの寸法の図">
+          <path d="M60 40 Q60 18 110 18 Q160 18 160 40 L160 50 L60 50 Z" fill="var(--accent)" fill-opacity=".15" stroke="var(--accent)" stroke-width="2"/>
+          <rect x="94" y="50" width="32" height="52" fill="var(--accent)" fill-opacity=".08" stroke="var(--accent)" stroke-width="2"/>
+          <rect x="102" y="50" width="16" height="52" fill="none" stroke="var(--muted)" stroke-dasharray="3 2"/>
+          <line x1="60" y1="10" x2="160" y2="10" stroke="var(--text)"/><text x="110" y="7" font-size="9" text-anchor="middle" fill="var(--text)">傘の大きさ（傘径）</text>
+          <line x1="172" y1="18" x2="172" y2="102" stroke="var(--text)"/><text x="176" y="62" font-size="9" fill="var(--text)">軸の長さ</text><text x="176" y="73" font-size="8" fill="var(--muted)">（全体の高さ）</text>
+          <line x1="102" y1="114" x2="118" y2="114" stroke="var(--text)"/><text x="110" y="126" font-size="9" text-anchor="middle" fill="var(--text)">ノズル穴（軸の内径）</text>
+        </svg>
+        <ul>
+          <li><b>傘の大きさ</b>：耳の穴に当たる部分の直径。耳の穴より少し大きいサイズを選ぶと密閉しやすい。上の「耳のサイズ」に入れると、各製品で近いサイズを表示します。</li>
+          <li><b>軸の長さ</b>：イヤピース全体の高さ。短いと浅く付いて充電ケースに収まりやすく（完全ワイヤレス向き）、長いと奥まで入って遮音性が上がりやすい。</li>
+          <li><b>ノズル穴</b>：イヤホンのノズル（音の出る筒）を差し込む穴の太さ。ノズルより少し細い程度が目安で、細すぎると付けにくく、太すぎると外れやすい。メーカーが対応ノズル径を出している製品は「対応」と表示しています。</li>
+          <li>「小さめ・標準・大きめ」は、このサイトに載っている製品の M サイズの中での位置です。</li>
+          <li>カードの絵は、寸法と製品の色をもとに描いたイラストです（実物の写真ではありません）。透明な傘は中の軸が透けて見えるように、フォームは表面のざらつきで描き分けています。寸法が未公表の製品は形の目安です。</li>
+          <li>カードの「寸法」「音の傾向」の●は情報の確かさです。<span style="color:var(--c3)">●</span>高い（メーカー公称・実測／レビュー多数）、<span style="color:#e0a100">●</span>中くらい（販売店・記事の値、一部のみ／海外レビュー中心）、<span style="color:var(--c2)">●</span>低め（同形状品の値の流用／メーカー説明のみ・素材からの推定）、○は情報なし。音の傾向はどれも測定値ではなく目安です。</li>
+        </ul>
+      </div>
+    </details>
+
+    <section id="list" class="list" aria-label="イヤーピース一覧"></section>
+  </main>
+
+  <div id="compare-bar" class="compare-bar" hidden>
+    <div class="bar-inner">
+      <span class="bar-title">比較 <span id="bar-count"></span></span>
+      <div id="bar-items" class="chips"></div>
+      <div class="bar-actions">
+        <button id="clear" class="ghost">クリア</button>
+        <a id="go-compare" class="button" href="compare.html">比較ページへ →</a>
+      </div>
+    </div>
+  </div>
+
+  <dialog id="detail"></dialog>
+
+  <dialog id="quiz" class="quiz">
+    <form id="quiz-form" method="dialog">
+      <div class="dlg-top"><h2>好みから探す</h2><button type="button" class="dlg-x" id="quiz-x" aria-label="閉じる">×</button></div>
+      <fieldset><legend>1. 音をどう変えたい？</legend>
+        <label><input type="radio" name="sound" value="bass" checked> 低音を増やしたい</label>
+        <label><input type="radio" name="sound" value="mid"> ボーカルを近くしたい</label>
+        <label><input type="radio" name="sound" value="treble"> 高音をクリアにしたい</label>
+        <label><input type="radio" name="sound" value="stage"> 広がりが欲しい</label>
+        <label><input type="radio" name="sound" value="neutral"> なるべく変えたくない</label>
+      </fieldset>
+      <fieldset><legend>2. 遮音性は？</legend>
+        <label><input type="radio" name="iso" value="high"> しっかり遮音したい</label>
+        <label><input type="radio" name="iso" value="mid" checked> ほどほどでいい</label>
+        <label><input type="radio" name="iso" value="low"> 周りの音も聞きたい</label>
+      </fieldset>
+      <fieldset><legend>3. 付け心地の悩みは？</legend>
+        <label><input type="radio" name="fit" value="pain"> 耳が痛くなる・疲れる</label>
+        <label><input type="radio" name="fit" value="fall"> 落ちる・ずれる</label>
+        <label><input type="radio" name="fit" value="none" checked> 特にない</label>
+      </fieldset>
+      <fieldset><legend>4. 使うイヤホンは？</legend>
+        <label><input type="radio" name="device" value="wired" checked> 有線イヤホン</label>
+        <label><input type="radio" name="device" value="tws"> 完全ワイヤレス</label>
+        <label><input type="radio" name="device" value="AirPods Pro"> AirPods Pro（第1・2世代）</label>
+        <label><input type="radio" name="device" value="AirPods Pro 3"> AirPods Pro 3</label>
+      </fieldset>
+      <fieldset><legend>5. 素材は？</legend>
+        <label><input type="radio" name="mat" value="any" checked> こだわらない</label>
+        <label><input type="radio" name="mat" value="silicone"> シリコン</label>
+        <label><input type="radio" name="mat" value="foam"> フォーム</label>
+      </fieldset>
+      <div class="dialog-actions">
+        <button type="button" id="quiz-run">この条件で探す</button>
+        <button type="button" class="ghost" id="quiz-close">閉じる</button>
+      </div>
+      <div id="quiz-result"></div>
+    </form>
+  </dialog>
+
+  <footer class="site-footer">
+    <p>📱 ホーム画面に追加すると、アプリのように開けて、電波が弱くても前回見た内容を表示できます（iPhone：Safariの共有ボタン→「ホーム画面に追加」／Android：Chromeのメニュー→「ホーム画面に追加」）。♥・メモ・耳のサイズはこの端末だけに保存されます。</p>
+    <p>カードのレーダーは「音の傾向スコア」です（付属イヤーピース＝3の相対評価）。個人ブログ、X、国内外のレビューサイトや掲示板、メーカー説明などを読んで個人がまとめた目安で、測定値ではなく、特定のレビューの転載でもありません。詳細の「総合評価」も同じく複数の情報をまとめたものです。</p>
+    <p>寸法はメーカー公称値を優先し、ない場合は販売店の掲載値・第三者の実測値を使っています。シルエットは寸法どおりの縮尺で、輪郭はメーカー図面から読み取った形です（図面がない製品は同じ形状タイプの平均形）。</p>
+    <p>価格・在庫は掲載していません。各製品の「購入先」のリンク先でご確認ください。製品写真は、メーカー・販売店の規約で利用が認められていないため載せていません。画像はすべて寸法から描いたシルエットです。<span id="updated"></span></p>
+    <p class="disclaimer">掲載している寸法・素材・音の傾向は、公開情報をもとに個人がまとめたもので、正確さや最新であることは保証できません。購入の前に販売店・メーカーの情報をご確認ください。このサイトは個人の非営利サイトで、メーカー・販売店とは関係がありません。製品名・ブランド名は各社の商標です。掲載内容に問題がある場合は <a href="https://github.com/SchallXD/earpiece-compare/issues" target="_blank" rel="noopener">GitHub の Issues</a> からお知らせください。</p>
+    <p>© 2026 SchallXD　サイトの文章・データ・プログラムの無断転載・転用を禁じます（製品写真・製品名・引用元の情報の権利は各社・各著者に帰属します）。</p>
+  </footer>
+
+  <script src="common.js?v=35"></script>
+  <script src="quiz.js?v=35"></script>
+  <script src="app.js?v=35"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>イヤーピース比較 - 比較</title>
+  <meta name="description" content="選んだイヤーピースの評価・サイズ・仕様を並べて比較">
+  <meta name="theme-color" content="#f6f5f2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="style.css?v=35">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="site-nav sub-nav"><a href="./">一覧</a><a href="compare.html" aria-current="page">比較</a></nav>
+    <h1>比較</h1>
+    <p class="lead">一覧で選んだイヤーピースを並べています。このページのURLを送ると、同じ比較を共有できます。</p>
+  </header>
+
+  <main>
+    <p id="empty" class="empty" hidden>比較する製品がまだ選ばれていません。<a href="./">一覧ページ</a>で「比較に追加」を押してください。</p>
+
+    <section id="compare" class="compare" hidden>
+      <div class="compare-head">
+        <div id="chips" class="chips"></div>
+        <div class="head-actions">
+          <a class="button ghost" href="./">← 製品を追加</a>
+          <button id="clear" class="ghost">選択をクリア</button>
+        </div>
+      </div>
+      <div class="compare-grid">
+        <figure class="panel">
+          <figcaption>音の傾向スコア（レビュー・説明から推定）</figcaption>
+          <div id="radar" class="radar-svg"></div>
+          <p id="rating-note" class="note"></p>
+        </figure>
+        <figure class="panel">
+          <figcaption>サイズ比較（実寸比）</figcaption>
+          <div id="size-svg"></div>
+          <p class="note">左：横から見た形　右：上から見た傘径と軸径。目盛りは1mm。</p>
+        </figure>
+      </div>
+      <div class="table-wrap"><table id="spec" class="spec"></table></div>
+    </section>
+  </main>
+
+  <dialog id="detail"></dialog>
+
+  <footer class="site-footer">
+    <p>音の傾向スコアは、ブログ・X・海外サイトのレビューとメーカー説明などから個人がまとめた目安です。寸法・輪郭の出典は各製品の詳細に記載しています。価格・在庫は購入先のリンク先でご確認ください。<span id="updated"></span></p>
+    <p class="disclaimer">掲載している寸法・素材・音の傾向は、公開情報をもとに個人がまとめたもので、正確さや最新であることは保証できません。購入の前に販売店・メーカーの情報をご確認ください。このサイトは個人の非営利サイトで、メーカー・販売店とは関係がありません。製品名・ブランド名は各社の商標です。掲載内容に問題がある場合は <a href="https://github.com/SchallXD/earpiece-compare/issues" target="_blank" rel="noopener">GitHub の Issues</a> からお知らせください。</p>
+    <p>© 2026 SchallXD　サイトの文章・データ・プログラムの無断転載・転用を禁じます（製品写真・製品名・引用元の情報の権利は各社・各著者に帰属します）。</p>
+  </footer>
+
+  <script src="common.js?v=35"></script>
+  <script src="compare.js?v=35"></script>
+</body>
+</html>
