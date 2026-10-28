@@ -1,5 +1,5 @@
 // オフラインでも前回見た内容を開けるようにする。ページとデータは最新を取りに行き、失敗したら保存分を使う
-const CACHE = "earpiece-v26";
+const CACHE = "earpiece-v27";
 const CORE = ["./", "index.html", "compare.html", "style.css", "common.js", "app.js", "quiz.js", "compare.js", "data/earpieces.json", "icon.svg", "manifest.webmanifest"];
 
 self.addEventListener("install", (e) => {
