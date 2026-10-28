@@ -203,20 +203,7 @@ function toggleSelect(id) {
 
 /* ---------- 写真 ---------- */
 
-// 写真は各社の規約で利用が認められていないため現在は載せていない（images は空）。許可を得た画像だけを直接読み込む（コピーはしない）。Shopify の CDN は幅指定で縮小版を取れる
-const imgUrl = (u, w) => (u.includes("cdn.shopify.com") ? `${u}${u.includes("?") ? "&" : "?"}width=${w}` : u);
-
-function silhouetteHtml(item) {
-  if (!item.sizes) return `<span class="nodims">写真なし</span>`;
-  if (!drawable(item)) return `<span class="nodims">寸法未公表</span>`;
-  return silhouetteSvg([{ item, s: defaultSize(item), color: css("--muted") }], { grid: false, labels: false });
-}
-
-// 読み込めなかった写真は寸法シルエットに差し替える
-function photoHtml(img, alt, w, extra = "") {
-  return `<img src="${esc(imgUrl(img.url, w))}" alt="${esc(alt)}" loading="lazy" referrerpolicy="no-referrer" ${extra}
-    onerror="this.hidden=true;this.nextElementSibling&&(this.nextElementSibling.hidden=false)">`;
-}
+// 写真は AliExpress の商品画像だけを、先方の CDN から直接読み込んで詳細画面に出す（コピーはしない）
 
 /* ---------- 製品のイラスト（写真の代わり） ---------- */
 
@@ -313,20 +300,24 @@ function tipSvg(item) {
   return `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(item.name)}のイラスト">${defs}${g}</svg>`;
 }
 
-function thumbHtml(item, opts) {
-  const img = item.images?.[0];
-  if (!img) return `<span class="card-sil">${tipSvg(item)}</span>`;
-  return `${photoHtml(img, item.name, 480)}<span class="sil" hidden>${silhouetteHtml(item)}</span>`;
+// 一覧のカードはいつもイラスト（写真がある製品も見た目をそろえる）
+function thumbHtml(item) {
+  return `<span class="card-sil">${tipSvg(item)}</span>`;
 }
 
+const ILLUST_NOTE = "イラストは寸法と製品の色をもとに描いた目安です（実物の写真ではありません）。";
+
+// 詳細はイラストを先頭に、AliExpress の商品写真があれば並べる（画像は先方の CDN から直接読み込む）
 function galleryHtml(item) {
   const imgs = item.images || [];
   if (!imgs.length) return `<div class="gallery-main"><span class="card-sil">${tipSvg(item)}</span></div>
-    <p class="note">イラストは寸法と製品の色をもとに描いた目安です（実物の写真ではありません）。</p>`;
+    <p class="note">${ILLUST_NOTE}</p>`;
   return `
-    <div class="gallery-main">${photoHtml(imgs[0], item.name, 1000, 'id="gmain"')}<span class="sil" hidden>${silhouetteHtml(item)}</span></div>
-    <div class="gallery-strip">${imgs.map((g, i) => `
-      <button class="gthumb${i === 0 ? " on" : ""}" data-i="${i}" aria-label="写真${i + 1}">${photoHtml(g, item.name, 160)}</button>`).join("")}
+    <div class="gallery-main"><span class="card-sil" id="gsil">${tipSvg(item)}</span>
+      <img id="gmain" alt="${esc(item.name)}" referrerpolicy="no-referrer" hidden></div>
+    <div class="gallery-strip">
+      <button class="gthumb on" data-i="-1" aria-label="イラスト"><span class="card-sil">${tipSvg(item)}</span></button>${imgs.map((g, i) => `
+      <button class="gthumb" data-i="${i}" aria-label="写真${i + 1}"><img src="${esc(g.url)}" alt="" referrerpolicy="no-referrer" onerror="this.parentElement.hidden=true"></button>`).join("")}
     </div>
     <p class="note" id="gcredit"></p>`;
 }
@@ -334,16 +325,22 @@ function galleryHtml(item) {
 function bindGallery(dlg, item) {
   const imgs = item.images || [];
   const main = dlg.querySelector("#gmain");
+  if (!main) return;
+  const sil = dlg.querySelector("#gsil");
   const credit = dlg.querySelector("#gcredit");
   const show = (i) => {
-    if (!main) return;
-    main.hidden = false;
-    main.src = imgUrl(imgs[i].url, 1000);
-    credit.innerHTML = `写真：<a href="${esc(imgs[i].page)}" target="_blank" rel="noopener">${esc(imgs[i].source)}</a>（${i + 1} / ${imgs.length}）`;
+    main.hidden = i < 0;
+    sil.hidden = i >= 0;
+    if (i < 0) credit.textContent = ILLUST_NOTE;
+    else {
+      main.src = imgs[i].url;
+      credit.innerHTML = `写真：<a href="${esc(imgs[i].page)}" target="_blank" rel="noopener">${esc(imgs[i].source)} の商品ページ</a>（${i + 1} / ${imgs.length}）`;
+    }
     dlg.querySelectorAll(".gthumb").forEach((b) => b.classList.toggle("on", Number(b.dataset.i) === i));
   };
+  main.addEventListener("error", () => { show(-1); credit.textContent = "写真を読み込めませんでした。" + ILLUST_NOTE; });
   dlg.querySelectorAll(".gthumb").forEach((b) => b.addEventListener("click", () => show(Number(b.dataset.i))));
-  if (imgs.length) show(0);
+  show(-1);
 }
 
 /* ---------- レーダー（SVG。サムネイル用は小さく、詳細用は軸名つき） ---------- */
